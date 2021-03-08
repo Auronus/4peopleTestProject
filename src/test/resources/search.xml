@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="4people" parallel="tests" thread-count="10">
+    <test name="Поиск 1">
+        <parameter name="stand" value="ci"/>
+        <parameter name="thread" value="1"/>
+        <classes>
+            <class name="tests.search.SearchTest">
+                <methods>
+                    <include name="checkSearchFieldElements"/>
+                    <include name="checkEmptySearchModalElements"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Поиск 2">
+        <parameter name="stand" value="ci"/>
+        <parameter name="thread" value="2"/>
+        <classes>
+            <class name="tests.search.SearchTest">
+                <methods>
+                    <include name="checkCloseSearchWindow"/>
+                    <include name="checkSearchMatches"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

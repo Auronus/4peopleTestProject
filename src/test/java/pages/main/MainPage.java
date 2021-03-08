@@ -3,6 +3,7 @@ package pages.main;
 import lombok.Getter;
 import org.openqa.selenium.By;
 import pages.BasePage;
+import pages.searchwindow.SearchModalWindow;
 
 import static com.codeborne.selenide.Selenide.$;
 
@@ -23,6 +24,11 @@ public class MainPage  extends BasePage<MainPage, MainPageChecker> {
      * Кнопка поиска на главной
      */
     private By liveBetsSearchButton =  By.xpath("(//*[@class='b-filters__searchBut'])[1]");
+
+    /**
+     * Модальное окно
+     */
+    By searchModalWindow = By.cssSelector("div.search-popup.v-modal-search");
     //endregion
 
     /**
@@ -35,7 +41,18 @@ public class MainPage  extends BasePage<MainPage, MainPageChecker> {
     }
 
     public final MainPage scrollToSearch() {
-        $(liveBetsSearchField).scrollIntoView(true);
+        $(liveBetsSearchField).scrollIntoView(false);
         return this;
+    }
+
+    public final SearchModalWindow clickSearchButton() {
+        clickElements("Кнопка поиска LIVE BETS", liveBetsSearchButton);
+        return new SearchModalWindow();
+    }
+
+    public final SearchModalWindow search(String text) {
+        fillInputField("Поле поиска", liveBetsSearchField, text);
+        clickElements("Кнопка поиска LIVE BETS", liveBetsSearchButton);
+        return new SearchModalWindow();
     }
 }

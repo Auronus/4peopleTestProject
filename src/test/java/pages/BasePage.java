@@ -38,6 +38,25 @@ public class BasePage<PAGE extends BasePage, CHECKER extends BasePageChecker> {
         throw new NotImplementedException();
     }
 
+    public final PAGE clickElements(String elementName, By locator) {
+        return clickElements(elementName, $(locator));
+    }
+
+    @Step("Клик по элементу [{elementName}]")
+    public final PAGE clickElements(String elementName, SelenideElement element) {
+        element.click();
+        return (PAGE) this;
+    }
+
+    public final PAGE fillInputField(String elementName, By locator, String text) {
+        return fillInputField(elementName, $(locator), text);
+    }
+
+    @Step("Ввод в элемент [{elementName}] текст [{text}]")
+    public final PAGE fillInputField(String elementName, SelenideElement element, String text) {
+        element.setValue(text);
+        return (PAGE) this;
+    }
 
     public final String getElementText(String elementName, By locator) {
         return getElementText(elementName, $(locator));

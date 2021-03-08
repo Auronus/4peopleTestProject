@@ -1,19 +1,29 @@
 package pages.searchwindow;
 
+import com.codeborne.selenide.Condition;
+import com.codeborne.selenide.Selenide;
+import helpers.api.models.ValueItem;
+import lombok.Getter;
 import org.openqa.selenium.By;
+import org.testng.reporters.jq.Main;
 import pages.BasePage;
+import pages.event.EventPage;
+import pages.main.MainPage;
+
+import static com.codeborne.selenide.Selenide.$;
 
 /**
  * Модальное окно поиска
  */
-public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowPageChecker> {
+@Getter
+public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowPageChecker> implements SearchData {
 
     //region Локаторы
 
     /**
      * Модальное окно
      */
-    By searchModalWindow = By.className("search-popup v-modal-search");
+    By searchModalWindow = By.cssSelector("div.search-popup.v-modal-search");
 
     /**
      * Заголовок модального окна
@@ -51,7 +61,7 @@ public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowP
     /**
      * Поле поиска
      */
-    By searchField = By.className("search-in-popup");
+    By searchField = By.id("search-in-popup");
     /**
      * Кнопка очистки поля поиска
      */
@@ -59,11 +69,16 @@ public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowP
     /**
      * Кнопка микрофона в поле поиска
      */
-    By searchFieldMicButton = By.className("voice-mic search-popup__mic fa fa-microphone");
+    By searchFieldMicButton = By.cssSelector("div.voice-mic.search-popup__mic.fa.fa-microphone");
     /**
      * Кнопка поиска
      */
     By searchButton = By.className("search-popup__button");
+
+    /**
+     * Иконка лупы в поле поиска
+     */
+    By searchButtonIcon = By.cssSelector("i.fa.fa-search");
 
 
     /**
@@ -74,6 +89,10 @@ public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowP
      * Заголовок League
      */
     By leaguesButton = By.xpath("//*[@class='search-popup-tabs__header']/button[2]");
+    /**
+     * Сообщение об отсутствии результатов поиска
+     */
+    By noResultsLabel = By.className("search-popup__nothing-find");
 
     /**
      * Элемент в таблице
@@ -91,6 +110,13 @@ public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowP
      * Команды элемента в таблице
      */
     By eventTeams = By.className("search-popup-event__teams");
+
+    By coefName = By.className("search-popup-coef__name");
+    By coefValue = By.className("search-popup-coef__value");
+
+    public SearchModalWindow() {
+        $(searchModalWindow).should(Condition.exist);
+    }
     //endregion
 
     /**
@@ -100,5 +126,42 @@ public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowP
      */
     public SearchWindowPageChecker getChecker() {
         return new SearchWindowPageChecker(this);
+    }
+
+
+    public final MainPage clickCloseButton() {
+        clickElements("Кнопка закрытия модального окна", closeModalWindowButton);
+        return new MainPage();
+    }
+
+    public final SearchModalWindow clickSportsCheckbox() {
+        clickElements("Чекбокс Sports", sportsCheckbox);
+        return this;
+    }
+
+    public final SearchModalWindow clickLiveCheckbox() {
+        clickElements("Чекбокс Live", liveCheckbox);
+        return this;
+    }
+
+    public final SearchModalWindow clickSearchButton() {
+        clickElements("Кнопка поиска", searchButton);
+        return this;
+    }
+
+    public final SearchModalWindow clickLeaguesTab() {
+        clickElements("Таб Leagues", leaguesButton);
+        return this;
+    }
+
+    public final SearchModalWindow clickClearButton() {
+        clickElements("Кнопка очистки поля поиска", searchFieldCleanButton);
+        return this;
+    }
+
+    public final EventPage openEvent(ValueItem event) {
+        By eventLocator = By.xpath(String.format("//*[contains(text(),'%s')]", event.getN()));
+        clickElements("Event с номером " + event.getN(), eventLocator);
+        return new EventPage();
     }
 }

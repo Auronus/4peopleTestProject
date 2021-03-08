@@ -25,4 +25,8 @@ public class MainPageChecker extends BasePageChecker<MainPage> implements MainPa
         checkElementPlaceholder("Поле поиска", page.getLiveBetsSearchField(), SEARCH_FIELD_PLACEHOLDER);
     }
 
+    public final void checkSearchWindowNotPresented() {
+        checkElementExistNegative("Модальное окно", page.getSearchModalWindow());
+    }
+
 }
