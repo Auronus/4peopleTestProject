@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Хелпер для работы с датами и их преобразованиями
+ */
 public class DateHelper {
 
     /**
@@ -16,7 +19,8 @@ public class DateHelper {
     private static LocalDateTime parseTimeStampToLocalDateTime(int timestampDate) {
         return LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(timestampDate),
-                ZoneId.of("GMT+00:00") //ZoneId.systemDefault()
+                //ZoneId.of("GMT+00:00")
+                ZoneId.systemDefault()
         );
     }
 

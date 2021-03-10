@@ -1,8 +1,10 @@
 package pages;
 
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.function.Consumer;
@@ -14,8 +16,10 @@ import static com.codeborne.selenide.Selenide.$;
  */
 public class BasePage<PAGE extends BasePage, CHECKER extends BasePageChecker> {
 
-    public BasePage() {
+    protected WebDriver driver;
 
+    public BasePage() {
+        this.driver = WebDriverRunner.getWebDriver();
     }
 
     /**

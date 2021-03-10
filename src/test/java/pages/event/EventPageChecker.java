@@ -38,9 +38,9 @@ public class EventPageChecker extends BasePageChecker<EventPage> {
                 "%s%s/%s/%s/%s/",
                 ParametersProvider.getPropertyByName("url"),
                 live ? "live" : "line",
-                event.getSN(),
-                event.getLI() + "-" + leagueUrl,
-                String.valueOf(event.getI()) + "-" + teamsUrl
+                event.getSN().replace(" ", "-"),
+                (event.getLI() != 0 ? event.getLI() : event.getI()) + "-" + leagueUrl,
+                event.getI() + "-" + teamsUrl
         );
 
         Assert.assertEquals(
@@ -52,7 +52,6 @@ public class EventPageChecker extends BasePageChecker<EventPage> {
                         expectedUrl
                 )
         );
-        WebDriverRunner.url();
     }
 
 }

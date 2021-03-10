@@ -153,4 +153,17 @@ public class ValueItem {
 
     @JsonProperty("VI")
     private String vI;
+
+    @Override
+    public boolean equals(Object obj) {
+        return (lI == ((ValueItem) obj).getLI());
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + lI;
+        return result;
+    }
 }

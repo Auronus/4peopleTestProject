@@ -7,9 +7,12 @@ import helpers.api.ApiMethods;
 import helpers.api.models.ValueItem;
 import io.qameta.allure.Step;
 import org.openqa.selenium.JavascriptExecutor;
+import org.testng.Assert;
 import pages.BasePageChecker;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Selenide.$$;
 
@@ -64,81 +67,83 @@ public class SearchWindowPageChecker extends BasePageChecker<SearchModalWindow> 
 
 
     @Step(value = "Проверка результатов поиска (Включены оба чекбокса)")
-    public final void checkSearchResults(String searchString) {
-        ApiMethods apiMethods = new ApiMethods();
-        List<ValueItem> liveSearchResults = apiMethods.getLiveSearchResults(searchString).getValue();
-        List<ValueItem> notLiveSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+    public final void checkSearchResults(List<ValueItem> liveSearchResults, List<ValueItem> sportsSearchResults) {
+        List<ValueItem> newLiveSearchResults = (liveSearchResults != null ? liveSearchResults : new ArrayList<>());
+        List<ValueItem> newSportsSearchResults = (sportsSearchResults != null ? sportsSearchResults : new ArrayList<>());
 
         checkElementText(
                 "Заголовок EVENTS FOUND",
                 page.getSearchModalHeader(),
-                String.format(EVENTS_FOUND_HEADER_TEXT, liveSearchResults.size() + notLiveSearchResults.size())
+                String.format(EVENTS_FOUND_HEADER_TEXT, newLiveSearchResults.size() + newSportsSearchResults.size())
         );
 
         checkElementExist("Результат в списке", page.getItemCell());
         List<SelenideElement> items = $$(page.getItemCell());
-        checkListSize("Элементы в списке", page.getItemCell(), liveSearchResults.size() + notLiveSearchResults.size());
+        checkListSize(
+                "Элементы в списке",
+                page.getItemCell(),
+                newLiveSearchResults.size() + newSportsSearchResults.size()
+        );
 
         int countForCheck = Math.min(items.size(), 10);
         for (int i = 0; i < countForCheck; i++) {
-            if (i < liveSearchResults.size()) {
-                checkItemCell(i, liveSearchResults.get(i), items.get(i), true);
+            if (i < newLiveSearchResults.size()) {
+                checkItemCell(i, newLiveSearchResults.get(i), items.get(i), true);
             } else {
-                checkItemCell(i, notLiveSearchResults.get(i - liveSearchResults.size()), items.get(i), false);
+                checkItemCell(i, newSportsSearchResults.get(i - newLiveSearchResults.size()), items.get(i), false);
             }
         }
     }
 
-    @Step(value = "Проверка результатов поиска (Включены оба чекбокса)")
-    public final void checkSearchResultsLive(String searchString) {
-        ApiMethods apiMethods = new ApiMethods();
-        List<ValueItem> liveSearchResults = apiMethods.getLiveSearchResults(searchString).getValue();
+    @Step(value = "Проверка результатов поиска (League)")
+    public final void checkSearchLeagueResults(List<ValueItem> liveSearchResults, List<ValueItem> notLiveSearchResults) {
+        List<ValueItem> liveLeagueItems = (liveSearchResults != null)
+                ? liveSearchResults
+                .stream()
+                .filter(event -> event.getLI() != 0)
+                .distinct()
+                .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        List<ValueItem> sportsLeagueItems = (notLiveSearchResults != null)
+                ? notLiveSearchResults
+                .stream()
+                .filter(event -> event.getLI() != 0)
+                .distinct()
+                .collect(Collectors.toList())
+                : new ArrayList<>();
 
         checkElementText(
                 "Заголовок EVENTS FOUND",
                 page.getSearchModalHeader(),
-                String.format(EVENTS_FOUND_HEADER_TEXT, liveSearchResults.size())
+                String.format(EVENTS_FOUND_HEADER_TEXT, liveLeagueItems.size() + sportsLeagueItems.size())
         );
-
-        checkElementExist("Результат в списке", page.getItemCell());
-        List<SelenideElement> items = $$(page.getItemCell());
-
-        int countForCheck = Math.min(items.size(), 10);
-        for (int i = 0; i < countForCheck; i++) {
-            checkItemCell(i, liveSearchResults.get(i), items.get(i), true);
+        if (liveLeagueItems.size() == 0 && sportsLeagueItems.size() == 0) {
+            checkElementText("Текст об отсутствии результатов", page.getNoResultsLabel(), NO_RESULTS_LABEL);
+            return;
         }
-    }
-
-    @Step(value = "Проверка результатов поиска (Включены оба чекбокса)")
-    public final void checkSearchResultsSports(String searchString) {
-        ApiMethods apiMethods = new ApiMethods();
-        List<ValueItem> notLiveSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
-
-        checkElementText(
-                "Заголовок EVENTS FOUND",
-                page.getSearchModalHeader(),
-                String.format(EVENTS_FOUND_HEADER_TEXT, notLiveSearchResults.size())
-        );
 
         checkElementExist("Результат в списке", page.getItemCell());
         List<SelenideElement> items = $$(page.getItemCell());
-        checkListSize("Элементы в списке", page.getItemCell(), notLiveSearchResults.size());
+        checkListSize(
+                "Элементы в списке",
+                page.getItemCell(),
+                liveLeagueItems.size() + sportsLeagueItems.size()
+        );
 
         int countForCheck = Math.min(items.size(), 10);
         for (int i = 0; i < countForCheck; i++) {
-            checkItemCell(i, notLiveSearchResults.get(i), items.get(i), false);
+            Selenide.sleep(200);
+            if (i < liveLeagueItems.size()) {
+                checkLeagueItemCell(i, liveLeagueItems.get(i), items.get(i), true);
+            } else {
+                checkLeagueItemCell(i, sportsLeagueItems.get(i - liveLeagueItems.size()), items.get(i), false);
+            }
         }
     }
 
     @Step(value = "Проверка [{i}]-ого элемента в списке ")
     private void checkItemCell(int i, ValueItem item, SelenideElement cell, boolean live) {
-        //Хедер N + . + S (timestamp)
-        //Тело SN + . + L или LE
-        //Команды O1 + - + O2
-
-        //Первая ставка E(0).C
-        //Вторая ставка E(2).C
-        //Третья ставка E(1).C
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", cell);
         Selenide.sleep(100);
 
@@ -180,8 +185,11 @@ public class SearchWindowPageChecker extends BasePageChecker<SearchModalWindow> 
         List<SelenideElement> coefNames = cell.$$(page.getCoefName());
         List<SelenideElement> coefValues = cell.$$(page.getCoefValue());
 
-        //Если количество коэффициентов четное, то их 2
-        if (item.getE().size() >= 2) {
+        //Неясна логика отображения коэффициентов, нужна документация
+        //Первая ставка E(0).C
+        //Вторая ставка E(2).C
+        //Третья ставка E(1).C
+       /* if (item.getE().size() >= 2) {
             checkElementText(
                     "Имя первого коэффициента",
                     coefNames.get(0),
@@ -223,6 +231,28 @@ public class SearchWindowPageChecker extends BasePageChecker<SearchModalWindow> 
                         String.valueOf(item.getE().get(1))
                 );
             }
-        }
+        }*/
     }
+
+    @Step(value = "Проверка [{i}]-ого элемента в списке ")
+    private void checkLeagueItemCell(int i, ValueItem item, SelenideElement cell, boolean live) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", cell);
+        Selenide.sleep(100);
+
+        checkElementText(
+                "Заголовок %s-ого элемента в списке",
+                cell.$(page.getEventHeader()),
+                String.format("%s. %s%s",
+                        item.getN(),
+                        DateHelper.transformDateToSearchResultMask(item.getS()),
+                        (live ? " LIVE" : "")
+                )
+        );
+        checkElementText(
+                "Название дисциплины %s-ого элемента в списке",
+                cell.$(page.getEventLeague()),
+                String.format("%s. %s.", item.getSN(), item.getL())
+        );
+    }
+
 }

@@ -1,11 +1,11 @@
 package pages.searchwindow;
 
 import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
 import helpers.api.models.ValueItem;
+import io.qameta.allure.Step;
 import lombok.Getter;
 import org.openqa.selenium.By;
-import org.testng.reporters.jq.Main;
+import org.openqa.selenium.JavascriptExecutor;
 import pages.BasePage;
 import pages.event.EventPage;
 import pages.main.MainPage;
@@ -159,9 +159,18 @@ public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowP
         return this;
     }
 
+    @Step("Открытие события с N [{event.N}]")
     public final EventPage openEvent(ValueItem event) {
         By eventLocator = By.xpath(String.format("//*[contains(text(),'%s')]", event.getN()));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", $(eventLocator));
         clickElements("Event с номером " + event.getN(), eventLocator);
         return new EventPage();
+    }
+
+    @Step("Поиск по запросу [{searchString}]")
+    public final SearchModalWindow search(String searchString) {
+        fillInputField("Поле поиска", searchField, searchString);
+        clickElements("Кнопка поиска", searchButton);
+        return this;
     }
 }

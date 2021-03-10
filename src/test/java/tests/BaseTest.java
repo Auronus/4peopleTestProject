@@ -3,6 +3,7 @@ package tests;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import helpers.ParametersProvider;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 /**
@@ -16,5 +17,10 @@ public abstract class BaseTest {
         Configuration.timeout = Long.parseLong(ParametersProvider.getPropertyByName("implicitTimeout"));
 
         Selenide.open();
+    }
+
+    @AfterMethod
+    public final void closeBrowser() {
+        Selenide.closeWindow();
     }
 }

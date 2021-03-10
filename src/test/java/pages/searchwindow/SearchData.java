@@ -1,11 +1,9 @@
 package pages.searchwindow;
 
-import pages.BaseData;
-
 /**
  * Данные экрана поиска
  */
-public interface SearchData extends BaseData {
+public interface SearchData {
 
     String SEARCH_FIELD_PLACEHOLDER = "";
 

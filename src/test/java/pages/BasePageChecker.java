@@ -50,6 +50,8 @@ public class BasePageChecker<PAGE extends BasePage> {
         element.shouldNotBe(exist);
     }
 
+
+
     protected final void checkElementText(String elementName, By locator, String expectedText) {
         checkElementText(elementName, $(locator), expectedText);
     }
@@ -59,6 +61,8 @@ public class BasePageChecker<PAGE extends BasePage> {
         element.shouldHave(exactText(expectedText)
                 .because("actual: " + element.getText()));
     }
+
+
 
     protected final void checkElementValue(String elementName, By locator, String expectedText) {
         checkElementValue(elementName, $(locator), expectedText);
@@ -70,6 +74,8 @@ public class BasePageChecker<PAGE extends BasePage> {
                 .because("actual: " + element.getValue()));
     }
 
+
+
     protected final void checkElementPlaceholder(String elementName, By locator, String expectedText) {
         checkElementAttribute(elementName, $(locator), expectedText, "placeholder");
     }
@@ -77,6 +83,8 @@ public class BasePageChecker<PAGE extends BasePage> {
     protected final void checkElementPlaceholder(String elementName, SelenideElement element, String expectedText) {
         checkElementAttribute(elementName, element, expectedText, "placeholder");
     }
+
+
 
     protected final void checkElementAttribute(String elementName, By locator, String expectedText, String attribute) {
         checkElementAttribute(elementName, $(locator), expectedText, attribute);
@@ -88,6 +96,8 @@ public class BasePageChecker<PAGE extends BasePage> {
                 .because("actual: " + page.getElementAttribute(elementName, element, attribute)));
     }
 
+
+
     protected final void checkCheckboxChecked(String elementName, By locator) {
         checkCheckboxChecked(elementName, $(locator));
     }
@@ -96,6 +106,8 @@ public class BasePageChecker<PAGE extends BasePage> {
     protected final void checkCheckboxChecked(String elementName, SelenideElement element) {
         element.shouldBe(checked);
     }
+
+
 
     /**
      * Проверка размера списка элементов, который должен быть равен указанному числу.
