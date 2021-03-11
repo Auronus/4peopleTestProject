@@ -64,7 +64,7 @@ public class ApiMethods {
      * @return SearchResultModel
      */
     @Step("Получить результаты поиска по [{searchString}].")
-    public SearchResultModel getNotLiveSearchResults(String searchString) {
+    public SearchResultModel getSportsSearchResults(String searchString) {
         Response response = ExecutorAPI.get(requestSpecification,
                 String.format(Constants.SEARCH_SPORTS_URL, searchString),
                 HttpStatus.SC_OK);

@@ -3,11 +3,9 @@ package pages.searchwindow;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import helpers.DateHelper;
-import helpers.api.ApiMethods;
 import helpers.api.models.ValueItem;
 import io.qameta.allure.Step;
 import org.openqa.selenium.JavascriptExecutor;
-import org.testng.Assert;
 import pages.BasePageChecker;
 
 import java.util.ArrayList;

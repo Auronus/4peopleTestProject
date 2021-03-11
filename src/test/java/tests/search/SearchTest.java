@@ -8,7 +8,9 @@ import org.testng.annotations.Test;
 import pages.main.MainPage;
 import tests.BaseTest;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.codeborne.selenide.Selenide.open;
 
@@ -50,7 +52,7 @@ public class SearchTest extends BaseTest {
         String searchString = "Rocket League";
         ApiMethods apiMethods = new ApiMethods();
         List<ValueItem> liveSearchResults = apiMethods.getLiveSearchResults(searchString).getValue();
-        List<ValueItem> sportsSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> sportsSearchResults = apiMethods.getSportsSearchResults(searchString).getValue();
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
@@ -76,7 +78,7 @@ public class SearchTest extends BaseTest {
     public final void checkSearchMatchesSports() {
         String searchString = "Rocket League";
         ApiMethods apiMethods = new ApiMethods();
-        List<ValueItem> sportsSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> sportsSearchResults = apiMethods.getSportsSearchResults(searchString).getValue();
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
@@ -91,7 +93,7 @@ public class SearchTest extends BaseTest {
         String searchString = "Rocket League";
         ApiMethods apiMethods = new ApiMethods();
         List<ValueItem> liveSearchResults = apiMethods.getLiveSearchResults(searchString).getValue();
-        List<ValueItem> sportsSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> sportsSearchResults = apiMethods.getSportsSearchResults(searchString).getValue();
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
@@ -119,7 +121,7 @@ public class SearchTest extends BaseTest {
     public final void checkSearchMatchesSportsViaModal() {
         String searchString = "Rocket League";
         ApiMethods apiMethods = new ApiMethods();
-        List<ValueItem> sportsSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> sportsSearchResults = apiMethods.getSportsSearchResults(searchString).getValue();
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
@@ -135,7 +137,7 @@ public class SearchTest extends BaseTest {
         String searchString = "Rocket League";
         ApiMethods apiMethods = new ApiMethods();
         List<ValueItem> liveSearchResults = apiMethods.getLiveSearchResults(searchString).getValue();
-        List<ValueItem> notLiveSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> notLiveSearchResults = apiMethods.getSportsSearchResults(searchString).getValue();
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
@@ -163,7 +165,7 @@ public class SearchTest extends BaseTest {
     public final void checkSearchLeaguesSports() {
         String searchString = "Rocket League";
         ApiMethods apiMethods = new ApiMethods();
-        List<ValueItem> notLiveSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> notLiveSearchResults = apiMethods.getSportsSearchResults(searchString).getValue();
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
@@ -179,7 +181,7 @@ public class SearchTest extends BaseTest {
         String searchString = "Rocket League";
         ApiMethods apiMethods = new ApiMethods();
         List<ValueItem> liveSearchResults = apiMethods.getLiveSearchResults(searchString).getValue();
-        List<ValueItem> notLiveSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> notLiveSearchResults = apiMethods.getSportsSearchResults(searchString).getValue();
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
@@ -208,7 +210,7 @@ public class SearchTest extends BaseTest {
     public final void checkSearchLeaguesSportsViaModal() {
         String searchString = "Rocket League";
         ApiMethods apiMethods = new ApiMethods();
-        List<ValueItem> notLiveSearchResults = apiMethods.getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> notLiveSearchResults = apiMethods.getSportsSearchResults(searchString).getValue();
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
@@ -238,7 +240,7 @@ public class SearchTest extends BaseTest {
         ValueItem event;
         boolean live;
         List<ValueItem> liveSearchResults = new ApiMethods().getLiveSearchResults(searchString).getValue();
-        List<ValueItem> notLiveSearchResults = new ApiMethods().getNotLiveSearchResults(searchString).getValue();
+        List<ValueItem> notLiveSearchResults = new ApiMethods().getSportsSearchResults(searchString).getValue();
         if (liveSearchResults.size() > 0) {
             event = liveSearchResults.get(0);
             live = true;
@@ -254,5 +256,47 @@ public class SearchTest extends BaseTest {
                 .search(searchString)
                 .openEvent(event)
                 .checkPage(checker -> checker.checkUrl(event, live));
+    }
+
+    @Test(description = "Проверка перехода с экрана поиска по лиге из списка")
+    public final void checkOpenLeagueLink() {
+        String searchString = "Rocket League";
+        ValueItem league;
+        boolean live;
+        List<ValueItem> liveSearchResults = new ApiMethods().getLiveSearchResults(searchString).getValue();
+        List<ValueItem> sportsSearchResults = new ApiMethods().getSportsSearchResults(searchString).getValue();
+
+        List<ValueItem> liveLeagueItems = (liveSearchResults != null)
+                ? liveSearchResults
+                .stream()
+                .filter(event -> event.getLI() != 0)
+                .distinct()
+                .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        List<ValueItem> sportsLeagueItems = (sportsSearchResults != null)
+                ? sportsSearchResults
+                .stream()
+                .filter(event -> event.getLI() != 0)
+                .distinct()
+                .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        if (liveLeagueItems.size() > 0) {
+            league = liveLeagueItems.get(0);
+            live = true;
+        } else if (sportsLeagueItems.size() > 0) {
+            league = sportsLeagueItems.get(0);
+            live = false;
+        } else {
+            throw new AssertionError(String.format("По поискому запросу %s не найдено лиг", searchString));
+        }
+        open(ParametersProvider.getPropertyByName("url"));
+        new MainPage()
+                .scrollToSearch()
+                .search(searchString)
+                .clickLeaguesTab()
+                .openLeague(league)
+                .checkPage(checker -> checker.checkUrl(league, live));
     }
 }

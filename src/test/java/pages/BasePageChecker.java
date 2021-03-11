@@ -5,6 +5,7 @@ import com.codeborne.selenide.WebDriverRunner;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.$;
@@ -121,5 +122,18 @@ public class BasePageChecker<PAGE extends BasePage> {
                                        final By locator,
                                        final int neededSize) {
         $$(locator).shouldHaveSize(neededSize);
+    }
+
+    @Step("Проверка что текущий урл страницы равен [{expectedUrl}]")
+    protected final void checkUrl(String expectedUrl) {
+        Assert.assertEquals(
+                WebDriverRunner.url(),
+                expectedUrl,
+                String.format(
+                        "URL октрытой страницы [%s] не сооветствует ожидаемому [%s]",
+                        WebDriverRunner.url(),
+                        expectedUrl
+                )
+        );
     }
 }

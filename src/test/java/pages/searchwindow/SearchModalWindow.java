@@ -8,6 +8,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import pages.BasePage;
 import pages.event.EventPage;
+import pages.leagues.LeaguePage;
 import pages.main.MainPage;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -161,10 +162,18 @@ public class SearchModalWindow extends BasePage<SearchModalWindow, SearchWindowP
 
     @Step("Открытие события с N [{event.N}]")
     public final EventPage openEvent(ValueItem event) {
-        By eventLocator = By.xpath(String.format("//*[contains(text(),'%s')]", event.getN()));
+        By eventLocator = By.xpath(String.format("//div[contains(text(),'%s')]", event.getN()));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", $(eventLocator));
         clickElements("Event с номером " + event.getN(), eventLocator);
         return new EventPage();
+    }
+
+    @Step("Открытие лигу с N [{event.N}]")
+    public final LeaguePage openLeague(ValueItem event) {
+        By eventLocator = By.xpath(String.format("//div[contains(text(),'%s')]", event.getN()));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", $(eventLocator));
+        clickElements("League с номером " + event.getN(), eventLocator);
+        return new LeaguePage();
     }
 
     @Step("Поиск по запросу [{searchString}]")

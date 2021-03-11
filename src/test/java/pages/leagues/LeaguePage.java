@@ -1,4 +1,4 @@
-package pages.event;
+package pages.leagues;
 
 import com.codeborne.selenide.Condition;
 import lombok.Getter;
@@ -9,14 +9,14 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.switchTo;
 
 /**
- * Главный экран
+ * Экран лиги
  */
 @Getter
-public class EventPage extends BasePage<EventPage, EventPageChecker> {
+public class LeaguePage extends BasePage<LeaguePage, LeaguePageChecker> {
 
     private final By pageTitle = By.cssSelector("div.pages__title_main");
 
-    public EventPage() {
+    public LeaguePage() {
         switchTo().window(1);
         $(pageTitle).waitUntil(Condition.exist, 30000);
     }
@@ -24,10 +24,10 @@ public class EventPage extends BasePage<EventPage, EventPageChecker> {
     /**
      * Метод для использование чекера.
      *
-     * @return объект класса EventPageChecker
+     * @return объект класса LeaguePageChecker
      */
-    public EventPageChecker getChecker() {
-        return new EventPageChecker(this);
+    public LeaguePageChecker getChecker() {
+        return new LeaguePageChecker(this);
     }
 
 }
