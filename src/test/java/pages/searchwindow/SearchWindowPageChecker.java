@@ -63,8 +63,26 @@ public class SearchWindowPageChecker extends BasePageChecker<SearchModalWindow> 
         checkElementText("Текст об отсутствии результатов", page.getNoResultsLabel(), NO_RESULTS_LABEL);
     }
 
+    @Step("Проверка что чекбоксы вылкючены")
+    public final void checkDisableCheckbox() {
+        checkCheckboxCheckedNegative("Чекбокс Live", page.getLiveCheckbox());
+        checkCheckboxCheckedNegative("Чекбокс Sports", page.getSportsCheckbox());
+    }
 
-    @Step(value = "Проверка результатов поиска (Включены оба чекбокса)")
+    @Step("Проверка что выбран таб Matches")
+    public final void checkMatchesTabSelected() {
+        checkElementAttribute("Таб Matches", page.getMatchesButton(), ACTIVE_TAB, "class");
+        checkElementAttribute("Таб Leagues", page.getLeaguesButton(), NOT_ACTIVE_TAB, "class");
+    }
+
+    @Step("Проверка что выбран таб Leagues")
+    public final void checkLeagueTabSelected() {
+        checkElementAttribute("Таб Matches", page.getMatchesButton(), NOT_ACTIVE_TAB, "class");
+        checkElementAttribute("Таб Leagues", page.getLeaguesButton(), ACTIVE_TAB, "class");
+    }
+
+
+    @Step(value = "Проверка результатов поиска")
     public final void checkSearchResults(List<ValueItem> liveSearchResults, List<ValueItem> sportsSearchResults) {
         List<ValueItem> newLiveSearchResults = (liveSearchResults != null ? liveSearchResults : new ArrayList<>());
         List<ValueItem> newSportsSearchResults = (sportsSearchResults != null ? sportsSearchResults : new ArrayList<>());
@@ -82,6 +100,10 @@ public class SearchWindowPageChecker extends BasePageChecker<SearchModalWindow> 
                 page.getItemCell(),
                 newLiveSearchResults.size() + newSportsSearchResults.size()
         );
+
+        System.out.println(items);
+        System.out.println(newLiveSearchResults);
+        System.out.println(newSportsSearchResults);
 
         int countForCheck = Math.min(items.size(), 10);
         for (int i = 0; i < countForCheck; i++) {
@@ -128,6 +150,10 @@ public class SearchWindowPageChecker extends BasePageChecker<SearchModalWindow> 
                 page.getItemCell(),
                 liveLeagueItems.size() + sportsLeagueItems.size()
         );
+
+        /*System.out.println(items);
+        System.out.println(liveLeagueItems);
+        System.out.println(sportsLeagueItems);*/
 
         int countForCheck = Math.min(items.size(), 10);
         for (int i = 0; i < countForCheck; i++) {

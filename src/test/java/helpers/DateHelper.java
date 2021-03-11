@@ -19,8 +19,8 @@ public class DateHelper {
     private static LocalDateTime parseTimeStampToLocalDateTime(int timestampDate) {
         return LocalDateTime.ofInstant(
                 Instant.ofEpochSecond(timestampDate),
-                //ZoneId.of("GMT+00:00")
-                ZoneId.systemDefault()
+                ZoneId.of("GMT+00:00")
+                //ZoneId.systemDefault()
         );
     }
 

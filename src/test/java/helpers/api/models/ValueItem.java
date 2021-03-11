@@ -166,4 +166,9 @@ public class ValueItem {
         result = prime * result + lI;
         return result;
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.N);
+    }
 }

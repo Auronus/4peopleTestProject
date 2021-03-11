@@ -108,6 +108,15 @@ public class BasePageChecker<PAGE extends BasePage> {
         element.shouldBe(checked);
     }
 
+    protected final void checkCheckboxCheckedNegative(String elementName, By locator) {
+        checkCheckboxCheckedNegative(elementName, $(locator));
+    }
+
+    @Step("Проверка что чекбокс элемента [{elementName}] включен")
+    protected final void checkCheckboxCheckedNegative(String elementName, SelenideElement element) {
+        element.shouldNotBe(checked);
+    }
+
 
 
     /**

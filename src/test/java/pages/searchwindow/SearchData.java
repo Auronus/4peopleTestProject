@@ -20,4 +20,7 @@ public interface SearchData {
     String SECOND_COEF_NAME = "2";
     String DRAW_COEF_NAME = "X";
 
+    String ACTIVE_TAB = "search-popup-tabs__tab search-popup-tabs__tab--active";
+    String NOT_ACTIVE_TAB = "search-popup-tabs__tab";
+
 }

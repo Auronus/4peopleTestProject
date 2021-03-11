@@ -37,6 +37,28 @@ public class SearchTest extends BaseTest {
                 .checkPage(checker -> checker.checkEmptySearchWindowElements());
     }
 
+    @Test(description = "Проверка выключения чекбоксов")
+    public final void checkCheckboxesDisable() {
+        open(ParametersProvider.getPropertyByName("url"));
+        new MainPage()
+                .scrollToSearch()
+                .clickSearchButton()
+                .clickLiveCheckbox()
+                .clickSportsCheckbox()
+                .checkPage(checker -> checker.checkDisableCheckbox());
+    }
+
+    @Test(description = "Проверка переключения табов")
+    public final void checkTabs() {
+        open(ParametersProvider.getPropertyByName("url"));
+        new MainPage()
+                .scrollToSearch()
+                .clickSearchButton()
+                .checkPage(checker -> checker.checkMatchesTabSelected())
+                .clickLeaguesTab()
+                .checkPage(checker -> checker.checkLeagueTabSelected());
+    }
+
     @Test(description = "Проверка закрытия модального окна")
     public final void checkCloseSearchWindow() {
         open(ParametersProvider.getPropertyByName("url"));
@@ -253,6 +275,7 @@ public class SearchTest extends BaseTest {
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
+                .clickSearchButton()
                 .search(searchString)
                 .openEvent(event)
                 .checkPage(checker -> checker.checkUrl(event, live));
@@ -294,8 +317,9 @@ public class SearchTest extends BaseTest {
         open(ParametersProvider.getPropertyByName("url"));
         new MainPage()
                 .scrollToSearch()
-                .search(searchString)
+                .clickSearchButton()
                 .clickLeaguesTab()
+                .search(searchString)
                 .openLeague(league)
                 .checkPage(checker -> checker.checkUrl(league, live));
     }
